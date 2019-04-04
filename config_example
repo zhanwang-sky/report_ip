@@ -1,0 +1,10 @@
+smtp.163.com
+xxx@163.com
+MyName
+xxx@icloud.com
+YourName
+Subject
+curl --connect-timeout 10 -m 20 http://members.3322.org/dyndns/getip
+integer items included in e-mail body (typically 5)
+integer retry interval (unit: sec) (typically 90)
+integer max retry time (typically 20)
