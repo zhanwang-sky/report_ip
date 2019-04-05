@@ -23,7 +23,7 @@ def send_email(smtp_server, from_addr, From, to_addr, To, subject, content, pass
     msg['To'] = format_addr('%s <%s>' % (To, to_addr))
     msg['Subject'] = Header(subject, 'utf-8').encode()
     # Send e-mail
-    email_client = smtplib.SMTP(smtp_server, 25, 'Winterfell', 30)
+    email_client = smtplib.SMTP(smtp_server, 25, 'Winterfell', 60)
     # Try to send e-mail, if not successful, do not forget to close session
     try:
         email_client.starttls()
@@ -59,7 +59,8 @@ print('Max retry:', max_retry)
 print('########################################')
 print('## Script started:\n')
 
-seq_num = 0
+seq_num = 1
+new_record = True
 content = ['' for i in range(nr_entries + 2)]
 content[0] = 'Your IP change log:\n\n'
 content[-1] = '\nSent by Python\n'
@@ -82,16 +83,13 @@ while True:
         else:
             break
     if retry_count < max_retry and current_ip != last_ip:
-        seq_num += 1
         timestamp = time.strftime('%Y-%m-%d %H:%M', time.localtime())
         line = str('%s %s -> %s\n' % (timestamp, last_ip, current_ip))
-        if content[seq_num] != '':
+        if new_record and content[seq_num] != '':
             content.pop(1)
             content.insert(nr_entries, line)
         else:
             content[seq_num] = line
-        if seq_num >= nr_entries:
-            seq_num = 0
         ########## Test ##########
         print('----------')
         print(''.join(content))
@@ -106,11 +104,16 @@ while True:
             except:
                 print('an error occured during sending e-mail')
                 print('XXXXXXXXXXXXXXXXXXXX')
+                new_record = False
                 retry_count += 1
                 time.sleep(retry_interval)
             else:
                 print('e-mail was sent successfully')
                 print('____________________')
+                seq_num += 1
+                if seq_num >= nr_entries:
+                    seq_num = 1
+                new_record = True
                 last_ip = current_ip
                 break
     time.sleep(retry_interval * (max_retry - retry_count))
