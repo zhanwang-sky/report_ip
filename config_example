@@ -4,7 +4,7 @@ MyName
 xxx@icloud.com
 YourName
 Subject
-curl --connect-timeout 10 -m 20 http://members.3322.org/dyndns/getip
+curl --connect-timeout 30 -m 30 icanhazip.com
 integer items included in e-mail body (typically 5)
 integer retry interval (unit: sec) (typically 90)
 integer max retry time (typically 20)
